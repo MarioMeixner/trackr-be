@@ -17,4 +17,7 @@ export class UserEntity implements User {
 
   @Exclude()
   password: string | null;
+
+  @Exclude()
+  refreshToken: string | null;
 }
