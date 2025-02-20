@@ -1,17 +1,16 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  const password = (await bcrypt?.hash('123456', 10)) as string;
+  const hashedPassword = await bcrypt.hash('123456', 10);
   const mario = await prisma.user.upsert({
     where: { email: 'mario@trackr.io' },
     update: {},
     create: {
       email: 'mario@trackr.io',
       name: 'Mario Meixner',
-      password,
+      password: hashedPassword,
       tracks: {
         create: {
           title: 'Check out Prisma with Next.js',
@@ -31,7 +30,7 @@ async function main() {
           },
           create: {
             email: 'mario@trackr.io',
-            password,
+            password: hashedPassword,
           },
         },
       },
