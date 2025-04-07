@@ -8,6 +8,7 @@ import { AuthEntity } from './entity/auth.entity';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -64,6 +65,21 @@ export class AuthService {
       refreshToken,
       user,
     };
+  }
+
+  async register(name: string, email: string, password: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (user) {
+      throw new NotFoundException(`User already exists with email: ${email}`);
+    }
+    const newUser = this.prisma.user.create({
+      data: {
+        name,
+        email,
+        password: await bcrypt.hash(password, 10),
+      },
+    });
+    return newUser;
   }
 
   async refreshToken(res: Response, userId: string): Promise<AuthEntity> {

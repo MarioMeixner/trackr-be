@@ -14,6 +14,7 @@ import { Response as ResponseType } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtRefreshAuthGuard } from './jwt-refresh-auth.guard';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { RegisterDto } from './dto/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +27,12 @@ export class AuthController {
     @Response({ passthrough: true }) res: ResponseType,
   ) {
     return await this.authService.login(email, password, res);
+  }
+
+  @Post('register')
+  @ApiOkResponse({ type: AuthEntity })
+  async register(@Body() { name, email, password }: RegisterDto) {
+    return await this.authService.register(name, email, password);
   }
 
   @Post('/refresh')
