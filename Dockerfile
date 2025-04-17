@@ -6,13 +6,14 @@ WORKDIR /usr/src/app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN pnpm install
 
 # Copy the rest of the app
 COPY . .
 
 # Build the app
-RUN npm run build
+RUN npx prisma generate
+RUN pnpm run build
 
 # Set the command to run your Nest app
 CMD ["node", "dist/main"]
